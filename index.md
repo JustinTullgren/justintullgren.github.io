@@ -30,3 +30,12 @@ Bachelors in Computer Information Systems from UNH at Manchester.
 * Team Management
 * Roadmap and Product Backlog Management
 * .NET CMS Development
+
+### Development Practice Lead of Architecture at Ektron
+* Provided high-level technical guidance for product architecture to drive business goals
+* Attended and contributed to team design meetings
+
+### Senior Software Engineer at Ektron
+
+* Lead and supported the Campaign Management project
+* Researched current technologies to become more proficient in helping the team succeed in delivering high quality software
