@@ -2,7 +2,7 @@
 title: Justin Tullgren
 ---
 
-# Personable Principal Engineer and Team Lead with a background in Web and Mobile applications
+**Personable Principal Engineer and Team Lead with a background in Web and Mobile Applications**
 
 ## Education
 
@@ -10,7 +10,7 @@ Bachelors in Computer Information Systems from UNH at Manchester.
 
 ## Work History
 
-### (Current) Principal Engineer and Team Lead at Thunderhead, a Medallia company
+### (Current) Principal Engineer and Team Lead at Thunderhead, a Medallia Company
 
 #### _Responsilities_
 
