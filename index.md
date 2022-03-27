@@ -6,7 +6,7 @@ title: Justin Tullgren
 
 ## Education
 
-Bachelors in Computer Information Systems from UNH at Manchester.
+Bachelors in Computer Information Systems from UNH at Manchester
 
 ## Work History
 
