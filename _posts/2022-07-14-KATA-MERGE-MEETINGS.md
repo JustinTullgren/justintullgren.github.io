@@ -1,0 +1,164 @@
+layout: post
+title: "Interview Practial Kata: Merge Meetings"
+date: 2022-07-14 17:35:00 -0000
+categories: KATA INTERVIEW-PRACTICAL
+
+### The Ask
+
+Given a class `Meeting` which has `startTime` and `endTime` integer fields, write a function to merge the meetings so that it is
+possible to see when there are no active meetings.  
+
+The `startTime` and `endTime` represent thirty minute blocks of time passed 9:00AM.  
+
+For example: `Meeting(0, 2)` is a 1 hour meeting starting at 9:00AM.
+
+**Do not assume the meetings are in order**.
+
+### The Example
+
+Given the following meetings:
+
+```
+  [Meeting(0, 1), Meeting(3, 5), Meeting(4, 8), Meeting(10, 12), Meeting(9, 10)]
+```
+
+Then the result should be:
+
+```
+  [Meeting(0, 1), Meeting(3, 8), Meeting(9, 12)]
+```
+
+### Thought Process
+
+The bolded _assumption_ statement clarifying the items are not sorted made me want to sort the items right away. However, having not thought
+about the problem more in depth I took a note to think about that after reviewing the problem more.  
+
+I scanned the meetings in the example and tried to pick up on what my brain was doing automatically, which ended up being looking for the lowest 
+start time followed by the max end time that did not skip the last max end time. 
+
+#### Sort
+
+I therefore _did_ choose to sort the meetings by `startTime`.  
+I generally prefer to be safe and not modify inputs but in this example I did modify the input in place. If there is no space constraint
+I would take the safe approach instead.
+
+```kotlin
+data class Meeting(val startTime: Int, val endTime: Int)
+
+fun mergeMeetings(allMeetings: MutableList<Meeting>): List<Meeting> {
+  allMeetings.sortBy { it.startTime }
+}
+```
+
+#### Merge Range
+
+Thinking of the meeting _range_ made me think of a _min_ and a _max_. Now that the meetings are sorted I made the starting range be the first meeting
+`startTime` and `endTime`.
+
+```kotlin
+var min = allMeetings[0].startTime
+var max = allMeetings[0].endTime
+```
+
+### Guard
+
+Seeing the index access of the meetings list made me pause and think about an empty list or having only one meeting.  In either case we 
+don't need to do anything and we can prevent an index out of bounds error by returning early.
+
+```kotlin
+fun mergeMeetings(allMeetings: MutableList<Meeting>): List<Meeting> {
+  if (allMeetings.size <= 1) return allMeetings
+  
+  allMeetings.sortBy { it.startTime }
+}
+```
+
+### Merge
+
+Next was to find the overlapping _and adjacent_ meetings to form our meeting ranges.  The _adjacent_ piece matters because we are merging a range and
+having ranges next to each other does not help us solve the use case.  Additionally, since we started with a range using the first item in the sorted
+list we don't need to process it.
+
+```kotlin
+fun mergeMeetings(allMeetings: MutableList<Meeting>): List<Meeting> {
+    if (allMeetings.size <= 1) return allMeetings
+  
+    allMeetings.sortBy { it.startTime }
+    
+    var min = allMeetings[0].startTime
+    var max = allMeetings[0].endTime
+    
+    var mergedMeetings = mutableListOf<Meeting>()
+    
+    // meeting 0 already processed, start with next
+    for(i in 1 until allMeetings.size) {
+        val meeting = allMeetings[i]
+        
+        if (meeting.startTime > max) {
+            // this range is completed, add to final list
+            mergedMeetings.add(Meeting(min, max))
+            
+            // start next range
+            min = meeting.startTime
+            max = meeting.endTime
+            
+            continue
+        }
+        
+        if (meeting.endTime >= max) {
+            // increase range
+            max = meeting.endTime
+        }
+    }
+    
+    // when the loop finishes we have not added the last range, add it.
+    mergedMeetings.add(Meeting(min, max))
+    
+    return mergedMeetings
+}
+```
+
+### Closing Thoughts
+
+The final function runtime s `O(n log n)` due to the comparison based sorting.  The final space is `O(x)` which is the number of meeting ranges
+after the merge/reduction.  This is because we sorted the the input in place so there is no additional space we are using.  If I were being safe and 
+creating a new list to sort it would be `O(n + x)` to create the new list to sort and the reduced final list.
+
+### Follow up
+
+There were some edge cases such as when the first meeting starts first and ends last that resulted in more meetings than there should be in the resulting
+list. I also wanted to look at it using a more fluent api with a touch of functional programming.
+
+```kotlin
+
+data class Meeting(val startTime: Int, var endTime: Int)
+
+fun mergeRanges(meetings: List<Meeting>): List<Meeting> {
+    if(meetings.size <= 1) return meetings
+    
+    val sortedMeetings = meetings
+        .sortedBy { it.startTime }
+    
+    val firstMeeting = sortedMeetings.first()
+    
+    return sortedMeetings
+        .drop(1)
+        .fold(mutableListOf(firstMeeting)) { merged, meeting ->
+            val lastMeeting = merged.last()
+            when {
+                meeting.startTime <= lastMeeting.endTime -> {
+                    lastMeeting.endTime = 
+                        Math.max(lastMeeting.endTime, meeting.endTime)
+                }
+                meeting.endTime <= lastMeeting.endTime -> {
+                    // noop
+                }    
+                else -> {
+                    merged.add(meeting)
+                }
+            }
+            
+            merged
+        }
+}
+```
