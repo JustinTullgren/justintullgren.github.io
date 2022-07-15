@@ -10,11 +10,12 @@ Bachelors in Computer Information Systems from UNH at Manchester
 
 ## Work History
 
-### (Current) Principal Engineer and Team Lead at Thunderhead, a Medallia Company
+### (Current) Senior Manager at Medallia
 
 * Team Management
 * Roadmap and Product Backlog Management
 * Mobile SDK(s) Research and Development
+* Mobile SDK Contributor
 
 ### Senior Software Engineer at Thunderhead
 
